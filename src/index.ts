@@ -30,7 +30,7 @@ client.on("messageCreate", async (msg) => {
   const conversationLog: ChatCompletionRequestMessage[] = [
     {
       role: "system",
-      content: "i am bot",
+      content: "Brasil!",
     },
   ];
 
@@ -41,12 +41,20 @@ client.on("messageCreate", async (msg) => {
 
   await msg.channel.sendTyping();
 
+  console.log(`Message: ${msg.content}`);
+
   const result = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
     messages: conversationLog,
   });
 
-  msg.reply(result.data.choices[0].message ?? "ChatGpt error: internal");
+  console.log(`Reply: ${result.data.choices[0].message?.content}`);
+
+  try {
+    msg.reply(result.data.choices[0].message ?? "ChatGpt error: internal");
+  } catch (e) {
+    console.log(e);
+  }
 });
 
 client.login(process.env.TOKEN);

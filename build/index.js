@@ -51,7 +51,7 @@ const config = new openai_1.Configuration({
 });
 const openai = new openai_1.OpenAIApi(config);
 client.on("messageCreate", (msg) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+    var _a, _b;
     if (msg.author.bot)
         return;
     if (msg.channel.id !== process.env.CHANNEL_ID)
@@ -61,7 +61,7 @@ client.on("messageCreate", (msg) => __awaiter(void 0, void 0, void 0, function* 
     const conversationLog = [
         {
             role: "system",
-            content: "i am bot",
+            content: "Brasil!",
         },
     ];
     conversationLog.push({
@@ -69,10 +69,17 @@ client.on("messageCreate", (msg) => __awaiter(void 0, void 0, void 0, function* 
         content: msg.content,
     });
     yield msg.channel.sendTyping();
+    console.log(`Message: ${msg.content}`);
     const result = yield openai.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages: conversationLog,
     });
-    msg.reply((_a = result.data.choices[0].message) !== null && _a !== void 0 ? _a : "ChatGpt error: internal");
+    console.log(`Reply: ${(_a = result.data.choices[0].message) === null || _a === void 0 ? void 0 : _a.content}`);
+    try {
+        msg.reply((_b = result.data.choices[0].message) !== null && _b !== void 0 ? _b : "ChatGpt error: internal");
+    }
+    catch (e) {
+        console.log(e);
+    }
 }));
 client.login(process.env.TOKEN);

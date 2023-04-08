@@ -1,2 +1,2 @@
 # openai-discord
-openai-discord
+ openai-discord

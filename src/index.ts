@@ -1,6 +1,8 @@
-require("dotenv/config");
-const { Client, IntentsBitField } = require("discord.js");
-const { Configuration, OpenAIApi } = require("openai");
+import * as dotenv from "dotenv";
+import { Client, IntentsBitField } from "discord.js";
+import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
+
+dotenv.config();
 
 const client = new Client({
   intents: [
@@ -25,7 +27,7 @@ client.on("messageCreate", async (msg) => {
   if (msg.channel.id !== process.env.CHANNEL_ID) return;
   if (msg.content.startsWith("!")) return;
 
-  let conversationLog = [
+  const conversationLog: ChatCompletionRequestMessage[] = [
     {
       role: "system",
       content: "i am bot",
@@ -44,7 +46,7 @@ client.on("messageCreate", async (msg) => {
     messages: conversationLog,
   });
 
-  msg.reply(result.data.choices[0].message);
+  msg.reply(result.data.choices[0].message ?? "ChatGpt error: internal");
 });
 
 client.login(process.env.TOKEN);

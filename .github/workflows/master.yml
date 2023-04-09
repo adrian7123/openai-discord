@@ -24,4 +24,4 @@ jobs:
         run: git pull
 
       - name: Deploy
-        run: yarn deploy:prod
+        run: yarn pm2:restart

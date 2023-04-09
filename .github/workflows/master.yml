@@ -16,12 +16,15 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
+          script: |
+            whoami
+            ls -al
 
-      - name: Install PM2
-        run: npm i pm2
+      # - name: Install PM2
+      #   run: npm i pm2
 
-      - name: pulling
-        run: git pull
+      # - name: pulling
+      #   run: git pull
 
-      - name: Deploy
-        run: yarn pm2:restart
+      # - name: Deploy
+      #   run: yarn pm2:restart

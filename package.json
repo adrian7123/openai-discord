@@ -8,8 +8,7 @@
     "build": "tsc -p ./",
     "start": "ts-node src/index.ts",
     "start:prod": "node build/index.js",
-    "deploy:prod": "yarn build && pm2 start build/index.js --name openai-discord",
-    "pm2:restart": "yarn build && pm2 restart openai-discord",
+    "deploy:prod": "yarn build && pm2 delete openai-discord && pm2 start build/index.js --name openai-discord",
     "kill:process": "pm2 delete openai-discord",
     "stop:process": "pm2 stop openai-discord"
   },

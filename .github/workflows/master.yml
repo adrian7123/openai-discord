@@ -16,14 +16,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
-          script: cd /home/node/openai-discord |
-            ls
-
-      # - name: Install PM2
-      #   run: npm i pm2
-
-      # - name: pulling
-      #   run: git pull
-
-      # - name: Deploy
-      #   run: yarn pm2:restart
+          script: cd /home/node/openai-discord &&
+            ls |
+            git pull |
+            yarn deploy:prod

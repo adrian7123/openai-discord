@@ -16,9 +16,10 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
-          script: cd /home/node/openai-discord |
-            ls |
-            git pull |
-            yarn build |
-            yarn kill:process |
+          script: |
+            cd /home/node/openai-discord 
+            ls 
+            git pull 
+            yarn build 
+            yarn kill:process 
             yarn deploy

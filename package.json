@@ -10,7 +10,8 @@
     "start:prod": "node build/index.js",
     "deploy:prod": "yarn build && pm2 delete openai-discord && pm2 start build/index.js --name openai-discord",
     "kill:process": "pm2 delete openai-discord",
-    "stop:process": "pm2 stop openai-discord"
+    "stop:process": "pm2 stop openai-discord",
+    "testss": ""
   },
   "keywords": [],
   "author": "adrian7123",

@@ -1,4 +1,4 @@
-name: CI - Master
+name: Upload to vps
 on:
   push:
     branches: [master]
@@ -10,15 +10,12 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: executing remote ssh commands using password
-        uses: appleboy/ssh-action@v0.1.9
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          port: ${{ secrets.PORT }}
-          script: |
-            whoami
-            pwd
+        uses: easingthemes/ssh-deploy@main
+        env:
+          REMOTE_HOST: ${{ secrets.HOST }}
+          REMOTE_USER: ${{ secrets.USERNAME }}
+          REMOTE_PASSWORD: ${{ secrets.PASSWORD }}
+          REMOTE_PORT: ${{ secrets.PORT }}
 
       # - name: Install PM2
       #   run: npm i pm2

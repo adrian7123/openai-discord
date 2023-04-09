@@ -27,10 +27,12 @@ client.on("messageCreate", async (msg) => {
   if (msg.channel.id !== process.env.CHANNEL_ID) return;
   if (msg.content.startsWith("!")) return;
 
+  if (!msg.content || msg.attachments.mapValues.length <= 0) return;
+
   const conversationLog: ChatCompletionRequestMessage[] = [
     {
       role: "system",
-      content: "Brasil!",
+      content: "Repita a frase",
     },
   ];
 
@@ -40,6 +42,23 @@ client.on("messageCreate", async (msg) => {
   });
 
   await msg.channel.sendTyping();
+
+  if (msg.content.startsWith("/img")) {
+    console.log(`Message: ${msg.content}`);
+
+    const result = await openai.createImage({
+      prompt: msg.content.replace("/img", ""),
+    });
+
+    console.log(`Reply: ${result.data.data[0].url}`);
+
+    try {
+      msg.reply(result.data.data[0].url ?? "ChatGpt Image error: internal");
+    } catch (e) {
+      console.log(e);
+    }
+    return;
+  }
 
   console.log(`Message: ${msg.content}`);
 
@@ -51,7 +70,7 @@ client.on("messageCreate", async (msg) => {
   console.log(`Reply: ${result.data.choices[0].message?.content}`);
 
   try {
-    msg.reply(result.data.choices[0].message ?? "ChatGpt error: internal");
+    msg.reply(result.data.choices[0].message ?? "ChatGpt Text error: internal");
   } catch (e) {
     console.log(e);
   }

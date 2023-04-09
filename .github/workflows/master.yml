@@ -17,7 +17,7 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           script: cd /home/node/openai-discord |
-            pwd
+            ls
 
       # - name: Install PM2
       #   run: npm i pm2

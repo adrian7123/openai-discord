@@ -18,7 +18,7 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             whoami
-            ls -al
+            pwd
 
       # - name: Install PM2
       #   run: npm i pm2

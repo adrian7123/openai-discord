@@ -19,4 +19,6 @@ jobs:
           script: cd /home/node/openai-discord &&
             ls |
             git pull |
-            yarn deploy:prod
+            yarn build |
+            yarn kill:process |
+            yarn deploy

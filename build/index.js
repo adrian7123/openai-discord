@@ -51,17 +51,19 @@ const config = new openai_1.Configuration({
 });
 const openai = new openai_1.OpenAIApi(config);
 client.on("messageCreate", (msg) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
+    var _a, _b, _c;
     if (msg.author.bot)
         return;
     if (msg.channel.id !== process.env.CHANNEL_ID)
         return;
     if (msg.content.startsWith("!"))
         return;
+    if (!msg.content || msg.attachments.mapValues.length <= 0)
+        return;
     const conversationLog = [
         {
             role: "system",
-            content: "Brasil!",
+            content: "Repita a frase",
         },
     ];
     conversationLog.push({
@@ -69,14 +71,28 @@ client.on("messageCreate", (msg) => __awaiter(void 0, void 0, void 0, function* 
         content: msg.content,
     });
     yield msg.channel.sendTyping();
+    if (msg.content.startsWith("/img")) {
+        console.log(`Message: ${msg.content}`);
+        const result = yield openai.createImage({
+            prompt: msg.content.replace("/img", ""),
+        });
+        console.log(`Reply: ${result.data.data[0].url}`);
+        try {
+            msg.reply((_a = result.data.data[0].url) !== null && _a !== void 0 ? _a : "ChatGpt Image error: internal");
+        }
+        catch (e) {
+            console.log(e);
+        }
+        return;
+    }
     console.log(`Message: ${msg.content}`);
     const result = yield openai.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages: conversationLog,
     });
-    console.log(`Reply: ${(_a = result.data.choices[0].message) === null || _a === void 0 ? void 0 : _a.content}`);
+    console.log(`Reply: ${(_b = result.data.choices[0].message) === null || _b === void 0 ? void 0 : _b.content}`);
     try {
-        msg.reply((_b = result.data.choices[0].message) !== null && _b !== void 0 ? _b : "ChatGpt error: internal");
+        msg.reply((_c = result.data.choices[0].message) !== null && _c !== void 0 ? _c : "ChatGpt Text error: internal");
     }
     catch (e) {
         console.log(e);

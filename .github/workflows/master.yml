@@ -1,0 +1,27 @@
+name: CI - Master
+on:
+  push:
+    branches: [master]
+
+jobs:
+  deploy:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v0.1.9
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+
+      - name: Install PM2
+        run: npm i pm2
+
+      - name: pulling
+        run: git pull
+
+      - name: Deploy
+        run: yarn deploy:prod

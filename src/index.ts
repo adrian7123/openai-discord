@@ -12,6 +12,8 @@ const client = new Client({
   ],
 });
 
+client.login(process.env.TOKEN);
+
 client.on("ready", () => {
   console.log("bot online");
 });
@@ -24,7 +26,7 @@ const openai = new OpenAIApi(config);
 
 client.on("messageCreate", async (msg) => {
   if (msg.author.bot) return;
-  if (msg.channel.id !== process.env.CHANNEL_ID) return;
+  if (process.env.CHANNELS?.includes(msg.channel.id)) return;
   if (msg.content.startsWith("!")) return;
 
   if (!msg.content || msg.attachments.mapValues.length <= 0) return;
@@ -60,14 +62,20 @@ client.on("messageCreate", async (msg) => {
     return;
   }
 
-  console.log(`Message: ${msg.content}`);
+  let log = `Message: ${msg.content}`;
+
+  console.log(log);
 
   const result = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
     messages: conversationLog,
   });
 
-  console.log(`Reply: ${result.data.choices[0].message?.content}`);
+  console.log(result.data.choices);
+
+  log = `Reply: ${result.data.choices[0].message?.content}`;
+
+  console.log(log);
 
   try {
     msg.reply(result.data.choices[0].message ?? "ChatGpt Text error: internal");
@@ -75,5 +83,3 @@ client.on("messageCreate", async (msg) => {
     console.log(e);
   }
 });
-
-client.login(process.env.TOKEN);

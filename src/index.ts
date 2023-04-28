@@ -8,6 +8,7 @@ const client = new Client({
   intents: [
     IntentsBitField.Flags.Guilds,
     IntentsBitField.Flags.GuildMessages,
+    IntentsBitField.Flags.GuildMembers,
     IntentsBitField.Flags.MessageContent,
   ],
 });
@@ -26,20 +27,56 @@ const openai = new OpenAIApi(config);
 
 client.on("messageCreate", async (msg) => {
   if (msg.author.bot) return;
-  if (process.env.CHANNELS?.includes(msg.channel.id)) return;
+  if (!process.env.CHANNELS?.includes(msg.channel.id)) return;
   if (msg.content.startsWith("!")) return;
+  if (msg.content.includes("@")) return;
+
+  const { guild } = msg;
 
   if (!msg.content || msg.attachments.mapValues.length <= 0) return;
 
   const conversationLog: ChatCompletionRequestMessage[] = [
     {
       role: "system",
-      content: "Repita a frase",
+      content: `Duotalk é uma plataforma de atendimento omnichannel que auxilia negócios na geração de Leads e atendimento ao cliente.
+      Somos uma plataforma de atendimento e vendas omnichannel para pequenas e médias empresas transformarem seu atendimento digital em vendas reais.
+      
+      Podemos te ajudar com:
+      
+      Unificar seu atendimento via Whatsapp, Instagram, Facebook e Webchat
+      
+      Organizar sua gestão de leads e vendas
+      
+      Chatbots para pré-atendimento em todos seus canais de venda
+      
+      Pesquisa de Satisfação pós-atendimento`,
+    },
+    {
+      role: "system",
+      content: "Você é um bot no meu discord.",
+    },
+    {
+      role: "system",
+      content: `Você esta no ${guild?.name} um servidor de discord para jogadores de CS:GO, Valorant e outros. Seu intuito é ensinar e melhorar a experiencia dos membros desse discord.`,
+    },
+    {
+      role: "system",
+      content: `O nome desse servidor é ${guild?.name}.`,
     },
   ];
 
+  const discordHistoric = await msg.channel.messages.fetch({ limit: 30 });
+
+  discordHistoric.forEach((dh) => {
+    conversationLog.push({
+      role: dh.author.id === "1094316334675927063" ? "assistant" : "user",
+      content: dh.content,
+    });
+  });
+
   conversationLog.push({
     role: "user",
+    name: msg.author.username,
     content: msg.content,
   });
 
@@ -67,7 +104,7 @@ client.on("messageCreate", async (msg) => {
   console.log(log);
 
   const result = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
+    model: process.env.MODEL ?? "gpt-3.5-turbo",
     messages: conversationLog,
   });
 

@@ -5,10 +5,13 @@
   "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc -p ./",
+    "build:prod": "tsc -p ./ --outDir build/prod",
+    "build:dev": "tsc -p ./ --outDir build/dev",
     "start": "nodemon src/index.ts",
-    "start:prod": "node build/index.js",
-    "deploy:prod": "yarn build && pm2 start build/index.js --name openai-discord",
+    "start:prod": "node build/prod/index.js",
+    "deploy:prod": "yarn build:prod && pm2 start build/prod/index.js --name openai-discord",
+    "start:dev": "node build/dev/index.js",
+    "deploy:dev": "yarn build:dev && pm2 start build/dev/index.js --name openai-discord",
     "deploy": "pm2 start build/index.js --name openai-discord",
     "kill:process": "pm2 delete openai-discord",
     "stop:process": "pm2 stop openai-discord"
